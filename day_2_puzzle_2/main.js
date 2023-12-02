@@ -10,6 +10,7 @@ class GameRoundResult {
         this.green = green || 0;
         this.blue = blue || 0;
     }
+
 }
 
 
@@ -20,7 +21,7 @@ class Game {
         // Game id
         this.id = id;
 
-        // Cube Boundaries.
+        // Cube minimum requirements for a possible game.
         this.redMinimum = 0;
         this.greenMinimum = 0;
         this.blueMinimum = 0;
@@ -55,7 +56,7 @@ class Game {
         this.gameRounds.push(new GameRoundResult(red, green, blue));
     }
 
-    // Validate if the game is possible or impossible given it's current configuration.
+    // Validate if the games minimum cube requirements.
     validateGame() {
         for (let round of this.gameRounds) {
             if (round.red > this.redMinimum) {
@@ -69,6 +70,7 @@ class Game {
             }
         }
     }
+    
 }
 
 
