@@ -56,7 +56,7 @@ class Game {
         this.gameRounds.push(new GameRoundResult(red, green, blue));
     }
 
-    // Validate if the games minimum cube requirements.
+    // Validate the game's minimum cube requirements.
     validateGame() {
         for (let round of this.gameRounds) {
             if (round.red > this.redMinimum) {
@@ -70,7 +70,7 @@ class Game {
             }
         }
     }
-    
+
 }
 
 
