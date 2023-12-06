@@ -3,24 +3,11 @@ const path = require("path");
 
 
 function findWinningTime(raceTime, recordDistance) {
-    // Coefficients for the quadratic equation
-    let a = -1;
-    let b = raceTime;
-    let c = -recordDistance;
+    let discriminant = (raceTime * raceTime) - (4 * recordDistance);
 
-    // Calculating the discriminant
-    let discriminant = b * b - 4 * a * c;
+    let sqrtDiscriminant = Math.floor(Math.sqrt(discriminant));
 
-    // Calculate the two possible solutions
-    let solution1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-    let solution2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-
-    // Array to hold valid solutions
-    let validSolutions = [solution1, solution2];
-    validSolutions.sort((a, b) => a - b);
-
-    // Return
-    return Math.floor(validSolutions[0]) + 1;
+    return Math.floor((raceTime - sqrtDiscriminant) / 2);
 }
 
 
@@ -50,7 +37,7 @@ const main = () => {
     let lastFoundWinner =  middlePartOfRace + (middlePartOfRace - firstFoundWinner);
 
     // Log the solution.
-    console.log(`Solution`, lastFoundWinner - firstFoundWinner + 1)
+    console.log(`Solution`, lastFoundWinner - firstFoundWinner - 1)
 }
 
 
