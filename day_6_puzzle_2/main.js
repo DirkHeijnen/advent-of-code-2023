@@ -45,7 +45,4 @@ const main = () => {
 }
 
 
-var startTime = performance.now()
 main();
-var endTime = performance.now()
-console.log(`Total time took ${endTime - startTime} milliseconds`)
