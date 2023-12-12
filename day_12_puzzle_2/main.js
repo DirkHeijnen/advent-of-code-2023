@@ -2,8 +2,21 @@ const fs = require("fs");
 const path = require("path");
 
 
-// The cache for memoization.
-const cache = new Map();
+// Custom memoized wrapper.
+const memoizedFunction = (fn) => {
+    const cache = new Map();
+
+    return function(...args) {
+        const key = JSON.stringify({ ...args });
+
+        if (!cache.has(key)) {
+            cache.set(key, fn.apply(this, args));
+        }
+        
+        return cache.get(key);
+    };
+};
+
 
 
 // Given a spring, will find all consecutive # at the start and return.
@@ -41,7 +54,7 @@ const countHashTags = (spring) => {
 }
 
 
-const findCombinations = (spring, groupings) => {
+const findCombinations = memoizedFunction((spring, groupings) => {
     // Replace dots on both ends of the spring.
     spring = spring.replace(/^\.+|\.+$/, '');
 
@@ -60,12 +73,6 @@ const findCombinations = (spring, groupings) => {
         return 1;
     }
 
-    const cacheKey = JSON.stringify({ spring, groupings });
-
-    if (cache.has(cacheKey)) {
-        return cache.get(cacheKey);
-    }
-    
     let result = 0;
     
     // Check for damaged (fixed '#') section at the start of the row
@@ -100,10 +107,8 @@ const findCombinations = (spring, groupings) => {
         }
     }
 
-    // Update cache and return.
-    cache.set(cacheKey, result);
     return result;
-};
+});
 
 
 const main = async () => {
