@@ -69,8 +69,7 @@ class Grid {
             // Keeps track of smudges.
             let smudgesDetected = 0;
 
-            // If the current row and the next row match, it's a potential mirror.
-            // if (this.compareForSinglePositionDifference(currentRow, nextRow)) {
+            // If the current row and the next row match, or if there is a single smudge on the line, it's a potential mirror.
             if (currentRow.toString() === nextRow.toString() || this.compareForSinglePositionDifference(currentRow, nextRow)) {
                 if (this.compareForSinglePositionDifference(currentRow, nextRow)) {
                     smudgesDetected++;
