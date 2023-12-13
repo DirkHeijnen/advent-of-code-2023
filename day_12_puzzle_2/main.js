@@ -18,10 +18,8 @@ const memoizedFunction = (fn) => {
 };
 
 
-
-// Given a spring, will find all consecutive # at the start and return.
-// If none are found undefined is returned.
-const findConsecutiveHashTagsAtStart = (spring) => {
+// Given a spring, will find all consecutive # at the start and return a string containing all the hashtags.
+const findConsecutiveHashTagsAtStart = memoizedFunction((spring) => {
     let count = 0;
 
     // Count consecutive '#' characters from the start
@@ -29,82 +27,70 @@ const findConsecutiveHashTagsAtStart = (spring) => {
         count++;
     }
 
-    // Check if the sequence of '#' is at the start and followed by '.' or if it's at the end.
-    if (count > 0) {
-        if (spring[count] === '.' || spring.length === count) {
-            return spring.substring(0, count);
-        }
-    }
+    // If there are no hastags, or if we can't conclusively form a group (? could potentially be a #) then no hashtags are found.
+    if (count === 0 || spring[count] === '?')
+        return ""
 
-    return undefined;
-}
+    // Return group of hashtags.
+    return spring.substring(0, count);
+});
 
 
 // Counts the hashtags in the spring and returns that count
-const countHashTags = (spring) => {
-    let count = 0;
+const countHashTags = memoizedFunction((spring, count = 0) => {
+    // Base cases.
+    if (spring[0] === '#')
+        return count + 1;
 
-    for (let char of spring) {
-        if (char === '#') {
-            count++;
-        }
-    }
-
-    return count;
-}
+    if (spring[0] !== '#')
+        return count;
 
 
+    // No base case.
+    return countHashTags(spring.slice(1), count)
+});
+
+
+// Counts the possible combinations.
 const findCombinations = memoizedFunction((spring, groupings) => {
     // Replace dots on both ends of the spring.
     spring = spring.replace(/^\.+|\.+$/, '');
 
-    // All groups are placed.
-    if (spring === '') {
-        if (groupings.length === 0) {
-            return 1;
-        }
-        return 0;
-    }
-
-    if (groupings.length === 0) {
-        if (spring.includes('#')) {
-            return 0;
-        }
+    // Base cases.
+    if (spring === '' && groupings.length === 0)
         return 1;
-    }
 
+    if (spring === '' && groupings.length !== 0) 
+        return 0
+    
+    if (groupings.length === 0 && spring.includes('#'))
+        return 0;
+
+    if (groupings.length === 0 && !spring.includes('#'))
+        return 1;
+
+
+    // Not a base case anymore from here on.
     let result = 0;
     
     // Check for damaged (fixed '#') section at the start of the row
     const consecutiveHashTags = findConsecutiveHashTagsAtStart(spring);
-    const currentGroupSize = groupings[0];
 
     if (consecutiveHashTags) {
-        if (consecutiveHashTags.length === currentGroupSize) {
-            // Values for next recursion.
-            const nextSpring = spring.slice(currentGroupSize);
-            const nextGroups = groupings.slice(1);
-
-            // Do the recursion and add to result.
-            result += findCombinations(nextSpring, nextGroups);
+        // If we walk up on the correct group of hashtags, continue, otherwise break the recursion early as the string doesn't comply with the groupings.
+        return consecutiveHashTags.length === groupings[0] 
+            ? result + findCombinations(spring.slice(groupings[0]), groupings.slice(1))
+            : result;
+    } 
+    
+    if (spring.includes('?')) {
+        // If there is still room for # to be placed, replace the ? with #.
+        if (countHashTags(spring) < groupings.reduce((a, b) => a + b)) {
+            result += findCombinations(spring.replace('?', '#'), groupings);
         }
-    } else if (spring.includes('?')) {
-        // For any ? left in the spring, we can change it with either '.' or '#'.
 
-        // First try the '.'
+        // Always replace the dots.
         result += findCombinations(spring.replace('?', '.'), groupings);
-
-        // If there are hashtags in the string, and the amount of hashtags is less than expect, try
-        // replacing with '#'.
-        const expectedHashTags = groupings.reduce((a, b) => a + b);
-        
-        if (countHashTags(spring) < expectedHashTags) {
-            // Values for next recursion.
-            const nextSpring = spring.replace('?', '#'); // Replaces only the first detected ? with #.
-            const nextGroups = groupings;
-
-            result += findCombinations(nextSpring, nextGroups);
-        }
     }
 
     return result;
