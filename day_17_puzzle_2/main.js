@@ -112,10 +112,11 @@ const findShortestPath = (grid) => {
     const startingY = 0;
 
     // Add the starting point to the queue.
-    queue.add(startingCost, startingX, startingY, -1, 0, null);
+    queue.add(startingCost, startingX, startingY, -1, 4, null);
 
 
     while (true) {
+
         // Loop over the queue.
         while (queue.get(currentCost) && queue.get(currentCost).length) {
 
@@ -129,6 +130,7 @@ const findShortestPath = (grid) => {
 
             // Mark the node as visited.
             visited.set(current.previous, current.x, current.y, current.direction, current.distance);
+
 
             // For every direction possible.
             for (let i = 0; i < 4; i++) {
@@ -147,9 +149,15 @@ const findShortestPath = (grid) => {
                 // If we are continuing (not taking a turn)
                 //      Then we must check the distance we already move.
                 //      If we have moved 10 consecutive moves in a single direction, we can skip this option.
-                if (!isTurn && current.distance >= 3) {
+                if (!isTurn && current.distance >= (10)) {
                     continue;
                 };
+
+                // In part 2, we can only take a turn if we already moved 4 times in the same direction, so no
+                // need to check edges that turn if we haven't made 4 moves so far.
+                if (isTurn && current.distance < 4) {
+                    continue;
+                }
 
                 // Also continue if the next option 
                 if (newX < 0 || newY < 0 || newX >= grid[0].length || newY >= grid.length) {
