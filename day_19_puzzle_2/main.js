@@ -140,7 +140,7 @@ class Rule {
     }
 
     /**
-     * Takes an input AcceptedResult and return an two RuleResult objects.
+     * Takes an input PartRanges and return an two RuleResult objects.
      * Each rule result contains the AcceptedResult after the rule is applied to it and the name of the next workflow or undefined.
      * 
      * @param {PartRanges} inputResult The current result before the rule is applied to it.
@@ -194,20 +194,13 @@ class Rule {
      * @returns {Boolean} True if the rule has a match, otherwise false.
      */
     #hasMatch(minValue, maxValue) {
-        let result = false;
-
         if (this.operator === '<') {
-            result = minValue < this.value && this.value < maxValue;
+            return minValue < this.value && this.value < maxValue;
         }
 
         if (this.operator === '>') {
-            result = maxValue > this.value && this.value > minValue;
+            return maxValue > this.value && this.value > minValue;
         }
-
-        console.log(`Checking for ${this.category} ${this.operator} ${this.value}`)
-        console.log(`${this.category} has the value of range of ${minValue}..${maxValue} thus the match is ${result}`)
-
-        return result;
     }
 
     /**
@@ -308,22 +301,20 @@ class WorkflowRunner {
 
         // Base case (Rejected)
         if (nextWorkflowName === 'R') {
-            console.log('Rejected the workflow.')
             return [];
         }
 
         // Base case (Accepted)
         if (nextWorkflowName === 'A') {
-            console.log('Accepted the workflow.')
             return [ruleResult.partRanges];
         }
+
+        // Store local results
+        const currentResults = [];
 
         // Get the current workflow.
         const currentWorkflow = this.workflows.find(workflow => workflow.name === nextWorkflowName);
 
-        const currentResults = [];
-
-        console.log(`\nNow starting workflow: ${currentWorkflow.name}`);
         for (let i = 0; i < currentWorkflow.rules.length; i++) {
             // Find the rule to execute and execute it.
             const ruleToExecute = currentWorkflow.rules[i];
@@ -338,21 +329,18 @@ class WorkflowRunner {
 
             // We need to call another workflow.
             if (matchedResult) {
-                console.log(`\nFound a match at workflow: ${currentWorkflow.name} and sending off to workflow: ${matchedResult.nextWorkflowName}`)
                 const recursionResult = this.execute(new RuleResult(matchedResult.partRanges, matchedResult.nextWorkflowName));
                 currentResults.push(...recursionResult);
             }
 
             // If we are on the final rule and have ran it, send it to the next workflow.
             if (i === currentWorkflow.rules.length - 1) {
-                console.log(`\nFound an unmatched rule at the end of workflow: ${currentWorkflow.name} and sending off to workflow: ${currentWorkflow.nextWorkflow}`)
                 const recursionResult = this.execute(new RuleResult(unmatchedResult.partRanges, currentWorkflow.nextWorkflow));
                 currentResults.push(...recursionResult);
             }
         }
 
         // All recursion is done
-        console.log(`Returning from ${currentWorkflow.name}`);
         return currentResults;
     }
 } 
