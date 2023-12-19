@@ -141,7 +141,7 @@ class Rule {
 
     /**
      * Takes an input PartRanges and return an two RuleResult objects.
-     * Each rule result contains the AcceptedResult after the rule is applied to it and the name of the next workflow or undefined.
+     * Each rule result contains the PartRanges after the rule is applied to it and the name of the next workflow or undefined.
      * 
      * @param {PartRanges} inputResult The current result before the rule is applied to it.
      * @returns {RuleResult[]} Returns two rule results.
