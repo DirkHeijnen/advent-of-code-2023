@@ -120,6 +120,7 @@ class StateMachine {
         this.queue = [];
 
         this.buttonPresses = 0;
+        this.conjuctionModuleForRx = undefined;
         this.modulesToCycleCheck = [];
     }
 
@@ -164,10 +165,10 @@ class StateMachine {
                 if (signal.destination === 'rx' && this.modulesToCycleCheck.length === 0) {
 
                     // Find the conjunction that leads to 'rx'.
-                    let conjuctionModule = this.getModuleByName(signal.source);
+                    this.conjuctionModuleForRx = this.getModuleByName(signal.source);
 
                     // Find all the sources of the conjuctions that lead up to 'rx'
-                    for (let source of conjuctionModule.sources) {
+                    for (let source of this.conjuctionModuleForRx.sources) {
                         this.modulesToCycleCheck.push({
                             module: this.getModuleByName(source),
                             amountOfPresses: 0,
