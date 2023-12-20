@@ -301,16 +301,15 @@ const main = async () => {
         stateMachine.processQueue();
     }
 
-    // Get the numbers
-    const lcmInput = [
-        stateMachine.modulesToCycleCheck[0].amountOfPresses,
-        stateMachine.modulesToCycleCheck[1].amountOfPresses,
-        stateMachine.modulesToCycleCheck[2].amountOfPresses,
-        stateMachine.modulesToCycleCheck[3].amountOfPresses,
-    ]
+    // Get the numbers from LCM.
+    const lcmNumbers = [];
+
+    for (let cycleModule of stateMachine.modulesToCycleCheck) {
+        lcmNumbers.push(cycleModule.amountOfPresses);
+    }
 
     // Return the solution.
-    return lcmAll(lcmInput);
+    return lcmAll(lcmNumbers);
 }
 
 
