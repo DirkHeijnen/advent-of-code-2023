@@ -182,7 +182,7 @@ class StateMachine {
             }
 
             // Check if we are sending a HIGH pulse signal to the conjuction that ends up at RX.
-            if (signal.destination === 'sq' && signal.pulse === PulseType.HIGH) {
+            if (this.conjuctionModuleForRx && signal.destination === this.conjuctionModuleForRx.name && signal.pulse === PulseType.HIGH) {
                 // Get the module that is sending to the the conjuction and mark it as satisfied.
                 let module = this.modulesToCycleCheck.find(cycle => cycle.module.name === signal.source);
 
