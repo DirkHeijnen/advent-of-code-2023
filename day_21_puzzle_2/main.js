@@ -222,9 +222,9 @@ const main = async () => {
     let x_values = [0, 1, 2]
     let target = Math.floor((26501365 - 65) / 131);
 
-    print('the x values to use: ' + x_values);
-    print('the y values to use: ' + y_values);
-    print('the target', target);
+    console.log('the x values to use: ' + x_values);
+    console.log('the y values to use: ' + y_values);
+    console.log('the target', target);
 
     // I ran this part of the solution in a seperate python project
     // with numpy (see main.py):
