@@ -14,7 +14,6 @@ type Vector2D struct {
 	y int64
 }
 
-// ? Might change px/vx to a positon/velocity struct with appropriate methods later
 type Hailstone struct {
 	position Vector2D
 	velocity Vector2D
